@@ -1,6 +1,7 @@
 name: Docker Publish (Production Images)
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
