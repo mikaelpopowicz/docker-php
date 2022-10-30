@@ -1,0 +1,30 @@
+name: Docker Publish (Production Images)
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 8 * * 2'
+
+jobs:
+  php:
+    uses: ./.github/workflows/workflow-docker-publish.yml
+    secrets: inherit
+
+  update_container_readme:
+    runs-on: ubuntu-latest
+    name: Push README to Docker Hub
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: push README to Dockerhub
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          repository: mpopowicz/php
+          short-description: ${{ github.event.repository.description }}
